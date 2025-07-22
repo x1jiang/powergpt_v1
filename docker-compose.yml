@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  powergpt-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - R_LIBS_USER=/usr/local/lib/R/library
+      - PYTHONPATH=/app
+    volumes:
+      - ./backend:/app
+      - r_library:/usr/local/lib/R/library
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/ai/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  powergpt-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - POWERGPT_BASE_URL=http://powergpt-backend:5001
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - powergpt-backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - powergpt-frontend
+      - powergpt-backend
+    restart: unless-stopped
+
+volumes:
+  r_library: 

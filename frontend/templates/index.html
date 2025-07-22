@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>University Access Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/style.css" rel="stylesheet">
+    
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #fafafa 10%, #f2f2f2 100%);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .text-center h5 {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        .test-item {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .test-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+        }
+        .row {
+            margin-top: 10px;
+        }
+        .test-item img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 0 0 8px 8px;
+            transition: transform 0.3s ease;
+        }
+        .utsection {
+            background: linear-gradient(135deg, #f0ece2, #ffffff);
+            width: 100%;
+            padding: 2rem 0;
+        }
+        .utsection .col-md-3 {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .utsection .col-md-3 a {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-radius: 0.375rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .utsection .col-md-3 a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .utsection .col-md-3 img {
+            width: 100% !important;      
+            max-width: 250px !important; 
+            height: auto !important;    
+            max-height: 120px !important; 
+            object-fit: contain;
+            padding: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .utsection .col-md-3 a:hover img {
+            transform: scale(1.05);
+        }
+        .palette1{
+            background: linear-gradient(45deg, #203562, #38598b);
+        }
+        .palette2{
+            background-color: #38598b;
+        }
+        .palette3{
+            background-color: #dfd3c3;
+        }
+        .palette4{
+            background-color: #f0ece2;
+        }
+        .background-section {
+            background: url('/static/assets/background_figure.jpg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            width: 100%; 
+            height: 60vh;
+        }
+        .background-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(0, 0, 0, 0.2) 0%,
+                rgba(0, 0, 0, 0.5) 30%,
+                rgba(0, 0, 0, 0.3) 40%,
+                rgba(255, 255, 255, 0.95) 90%,
+                rgba(255, 255, 255, 1) 100%
+            );
+            z-index: 0;
+        }
+        .text-overlay {
+            position: absolute;
+            top: 50%; 
+            left: 0;
+            width: 100%; 
+            transform: translateY(-50%); 
+            text-align: center; 
+            z-index: 1;
+            padding: 0 1rem;
+        }
+        .text-overlay h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem; 
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+        .text-overlay p {
+            font-size: 1.2rem;
+            background-color: rgba(250, 250, 250, 0.8);
+            padding: 10px 20px;
+            color: #333;
+            display: inline-block;
+            border-radius: 5px;
+        }
+        body {
+            /* Ensuring full height and responsive overflow */
+            overflow-x: hidden;
+        }
+        #stats-banner {
+            color: white;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        #stats-banner::after {
+            content: '';
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.2;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: 0;
+        }
+        .stat {
+            position: relative;
+            z-index: 1;
+        }
+        .stat h3 {
+            font-size: 2.2rem;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        .stat p {
+            font-size: 1.2rem;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+        .counter {
+            display: inline-block;
+            min-width: 50px;
+        }
+        .d-flex.flex-column {
+            overflow-x: hidden;
+        }
+        .other-institutions-logo {
+            /* Keep the 729×358 ratio if needed */
+            /* aspect-ratio: 'fit'; */
+            /* width: 100%; */
+            /* Background & layout */
+            /* background-color: #eeeeee; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Default font styles for the container */
+            font-family: "Times New Roman", Times, serif;
+            }
+        .demo-button {
+            /* Visuals */
+            background: #F5EFE7;
+            color: #2c3e50;
+            /* font-weight: 600; */
+            font-size: 1.6rem;
+            /* Sizing & Layout */
+            padding: 1.2rem 5rem;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            /* Interaction */
+            cursor: pointer;
+            transition: transform 0.2s ease, filter 0.3s ease;
+
+            /* Optional Shadow */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+        .demo-button:hover,
+        .demo-button:focus {
+        text-decoration: underline;
+        transform: translateY(-2px);
+        }
+
+        /* .demo-button:active {
+        transform: translateY(0);
+        text-decoration: underline;
+        } */
+
+        .demo-button.active {
+        transform: translateY(0);
+        text-decoration: underline;
+        }
+
+        /* Container for the entire slider */
+        .slider-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 1rem;
+        background-color: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Each slide */
+        .slide {
+        display: none; /* Hide slides by default */
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        img {
+            width: 100%;
+        }
+
+        }
+        .slide.active {
+        display: block; /* Show the active slide */
+        }
+        .description {
+            background-color: #203562;
+            padding: 1rem;
+            p {
+                color:white;
+                text-align: left; 
+                margin-bottom: 0;
+                /* padding-left: 1rem; */
+            }
+
+        }
+
+        /* Navigation buttons */
+        .slider-nav {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        /* background-color: white; */
+        }
+        .slider-nav button {
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        background: none; /* Remove default button background */
+        img {
+            width: 200px;
+        }
+        }
+
+        /* Optional: Slide heading and text styling */
+        .slide h2 {
+        margin-bottom: 1rem;
+        }
+        /* .slide p {
+        font-size: 1rem;
+        color: #333;
+        } */
+
+
+        footer {
+            background: linear-gradient(45deg, #203562, #38598b);
+        }
+        footer h4, footer h6, footer p, footer a {
+            font-family: 'Poppins', sans-serif;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex flex-column"> 
+        <div>
+            <img src="/static/assets/logo/powergpt_logo_white_background.png" alt="powerGPT logo" style="height:4rem; margin-left: 1rem;">
+        </div>
+        <div id="stats-banner" class="text-center palette1" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 stat">
+                        <h3><span id="usersCount" class="counter">0</span> Daily Users</h3>
+                        <p>Engaging with PowerGPT</p>
+                    </div>
+                    <div class="col-md-6 stat">
+                        <h3><span id="conversationsCount" class="counter">0</span> Conversations</h3>
+                        <p>Completed Today</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="background-section">
+            <div class="text-overlay">
+                <h1>Welcome To <strong>PowerGPT</strong></h1>
+                <p class="text-dark">PowerGPT is an intelligent assistant designed to guide researchers through power analysis for their studies. It provides clear, step-by-step explanations to help you calculate sample sizes, determine statistical power, and understand key concepts in your research design.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <section class="utsection">
+            <h1 class="pt-3">Select Your Institution</h1>
+        
+            <p class="text-center mb-5 mx-2">Welcome to the Institution Access Portal for PowerGPT. Please select your institution below to proceed. If your institution is not listed, please select "Other Institutions" to proceed and input your institution.</p>
+           
+            <div class="row justify-content-center g-4 mx-2">
+                <div class="col-md-3 col-sm-6">
+                    <a href="/upenn" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/upenn_logo.png" class="card-img-top p-4" alt="UPenn Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/uthealth" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/uthealth_logo.png" class="card-img-top p-4" alt="UTHealth Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/yale" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/yale_logo.png" class="card-img-top p-4" alt="Yale Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/iowa" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/iowa_logo.png" class="card-img-top p-4" alt="University of Iowa Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/mayo" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/mayo_logo.png" class="card-img-top p-4" alt="Mayo Clinic Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/jhu" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/jhu.jpg" class="card-img-top p-4" alt="JHU Clinic Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/wustl" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/WUSTL.png" class="card-img-top p-4" alt="WUSTL Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/pennState" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/PennState.png" class="card-img-top p-4" alt="PennState Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/UPitts" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/UPitts.png" class="card-img-top p-4" alt="University of Pittsburgh Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/pfizer" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/Pfizer.jpg" class="card-img-top p-4" alt="Pfizer Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="/UKentucky" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/UKentucky.png" class="card-img-top p-4" alt="UKentucky Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <a href="/Scripps" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/Scripps.png" class="card-img-top p-4" alt="Scripps Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <a href="/Tufts" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/Tufts_University_wordmark.png" class="card-img-top p-4" alt="Tufts University Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <a href="/utmb" class="university-click text-decoration-none text-dark">
+                        <img src="/static/assets/utmb-logo.png" class="card-img-top p-4" alt="UTMB Logo">
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <a href="/others" class="university-click text-decoration-none text-dark">
+                      <!-- Instead of an <img>, use a div with text -->
+                      <div class="card-img-top  other-institutions-logo">
+                        <img src="/static/assets/institution.png" class="card-img-top" alt="Other Institution Logo">
+                        <!-- <span>Other Institutions</span> -->
+                      </div>
+                    </a>
+                  </div>
+            </div>
+        </section>
+        
+        <div class="demo-section mb-5 container">
+            <h2 class="text-center mb-3">Tutorials</h2>
+            <button class="demo-button mx-1" id="button-1">Demo</button>
+            <button class="demo-button mx-1" id="button-2">Slideshow</button>
+            <div class="demo-container" style="position: relative; padding-bottom: 65.66%; width: 100%;">
+                <iframe 
+                src="https://demo.arcade.software/n9Gnwfeq32HOuC3ejq5X?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+                title="University Access Portal" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;"></iframe>
+            </div>
+            <!-- Slider Container -->
+            <div class="slider-container">
+                <!-- Slide 1 -->
+                <div class="slide active">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">1.&nbsp;Select Your Institution:  </p>
+                        <p style="padding-left: 1.3rem;">In the university access portal, choose your affiliated institution (or select "Other Institutions" if not listed).</p>
+                    </div>
+                    <img src="/static/assets/slides/page1.png" alt="page 1" >
+                
+                </div>
+
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">2.&nbsp;Enter Your Details :  </p>
+                        <p style="padding-left: 1.5rem;">Provide your name and institution (if not pre-listed), then click “Start Chat” to begin.</p>
+                    </div>
+                    <img src="/static/assets/slides/page2.png" alt="page 2" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">3.&nbsp;Ask Your Question :  </p>
+                        <p style="padding-left: 1.5rem;">Enter your query and provide some background to initiate the discussion with PowerGPT.</p>
+                    </div>
+                    <img src="/static/assets/slides/page3.png" alt="page 3" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">4.&nbsp;Initial Guidance :  </p>
+                        <p style="padding-left: 1.5rem;">PowerGPT interprets your input and outlines key parameters it needs for further analysis.</p>
+                    </div>
+                    <img src="/static/assets/slides/page4.png" alt="page 4" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">5.&nbsp;Refine Your Input :  </p>
+                        <p style="padding-left: 1.5rem;">Provide additional details to help PowerGPT improve its understanding.</p>
+                    </div>
+                    <img src="/static/assets/slides/page5.png" alt="page 5" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">6.&nbsp;Iterative Refinement :  </p>
+                        <p style="padding-left: 1.5rem;">PowerGPT adjusts its interpretation and highlights missing information.</p>
+                    </div>
+                    <img src="/static/assets/slides/page6.png" alt="page 6" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">7.&nbsp;Further Input :  </p>
+                        <p style="padding-left: 1.5rem;">Continue refining your details for more precise guidance.</p>
+                    </div>
+                    <img src="/static/assets/slides/page7.png" alt="page 7" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">8.&nbsp;Finalize Results:   </p>
+                        <p style="padding-left: 1.5rem;">PowerGPT finalizes its interpretation and computes the minimum required sample size. </p>
+                    </div>
+                    <img src="/static/assets/slides/page8.png" alt="page 8" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">9.&nbsp;Explore the Computation (Optional) :   </p>
+                        <p style="padding-left: 1.5rem;">Click the tab “Used …” to see the underlying statistical computations.</p>
+                    </div>
+                    <img src="/static/assets/slides/page9.png" alt="page 9" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">10.&nbsp;Give Feedback: </p>
+                        <p style="padding-left: 1.9rem;">Click the "Help Us Improve" tab (bottom right) to share your experience.</p>
+                    </div>
+                    <img src="/static/assets/slides/page10.png" alt="page 10" >
+                
+                </div>
+                <div class="slide">
+                    <div class="description">
+                        <p style="font-weight: 600; font-size: 1.3rem;">11.&nbsp;Try out with the following question: </p>
+                        <p style="padding-left: 1.6rem;">Recent literature indicates that patients with psoriatic arthritis have a 
+                            relatively high prevalence of diabetes compared to the general population in cross-sectional studies.
+                             You hypothesize that diabetes is a risk factor for higher disease activity in psoriatic arthritis, 
+                             with the mean disease activity (measured by cDAPSA) in the group with diabetes (Group A) being greater 
+                             than that in the group without diabetes (Group B). To test this hypothesis, you plan to conduct a study
+                              and randomly assign patients to one of the two groups. The disease activity measure, cDAPSA, ranges
+                               from 0 to 154 . In your clinic, the standard deviations for both groups of cDAPSA are equal to 10. 
+                               Which statistical test should be used? How many patients would be needed in each group to detect a 
+                               5-unit difference in cDAPSA between the two groups?</p>
+                    </div>
+                
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="slider-nav">
+                    <button id="prevBtn">
+                        <img src="/static/assets/leftArrow.png" style="margin-left:1.5rem">
+                    </button>
+                    <button id="nextBtn">
+                        <img src="/static/assets/rightArrow.png" >
+                    </button>
+                </div>
+            </div>
+
+            
+        </div>
+
+        <div class="container mt-5 utsection">
+            <h2 class="text-center mb-4">Tests Supported by PowerGPT</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <p class="test-itemp mb-2">One-sample t-test</p>
+                        <img src="/static/assets/figures/one-sample t-test.png" alt="One-sample t-test">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Two-sample t-test</h5>
+                        <img src="/static/assets/figures/two-sample t-test.png" alt="Two-sample t-test">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Paired t-test</h5>
+                        <img src="/static/assets/figures/Paired t-test.png" alt="Paired t-test">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">One-way ANOVA</h5>
+                        <img src="/static/assets/figures/one-way anova.png" alt="One-way ANOVA">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Single-proportion z-test</h5>
+                        <img src="/static/assets/figures/single-proportion z-test.png" alt="Single-proportion z-test">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Two-proportion z-test</h5>
+                        <img src="/static/assets/figures/two-proportion z-test.png" alt="Two-proportion z-test">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Chi-squared test</h5>
+                        <img src="/static/assets/figures/chi-squared test.png" alt="Chi-squared test">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Cox proportional hazard model</h5>
+                        <img src="/static/assets/figures/cox proportional hazard.png" alt="Cox proportional hazard model">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="test-item text-center p-3">
+                        <h5 class="test-itemp mb-2">Logrank test</h5>
+                        <img src="/static/assets/figures/Logrank test.png" alt="Logrank test">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="palette1 text-light py-4 w-100">
+        <div class="container">
+            <h4 class="text-uppercase fw-bold text-light text-center mb-5">Contact</h4>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h6 class="text-uppercase text-light fw-bold mb-3" style="font-size: 20px;">UTHealth Contact</h6>
+                    <p class="mb-2" style="font-size: 15px;">University of Texas Health Science Center at Houston</p>
+                    <p class="mb-2" style="font-size: 15px;">McWilliams School of Biomedical Informatics</p>
+                    <p class="mb-2" style="font-size: 15px;">Department of Health Data Science and Artificial Intelligence</p>
+                    <p class="mb-2" style="font-size: 15px;">Address: 7000 Fannin St, Houston, TX 77030</p>
+                    <p class="mb-2" style="font-size: 15px;">Phone: <a href="tel:+17135004472" class="text-light">(713) 500-4472</a></p>
+                    <p class="mb-2" style="font-size: 15px;">Email: <a href="mailto:xiaoqian.jiang@uth.tmc.edu" class="text-light">xiaoqian.jiang@uth.tmc.edu</a></p>
+                    <p class="mb-2" style="font-size: 15px;">Website: <a href="http://sbmi.uth.edu" target="_blank" class="text-light">sbmi.uth.edu</a></p>
+                </div>
+                <div class="col-12 col-md-6">
+                    <h6 class="text-uppercase text-light fw-bold mb-3" style="font-size: 20px;">UPenn Contact</h6>
+                    <p class="mb-2" style="font-size: 15px;">University of Pennsylvania</p>
+                    <p class="mb-2" style="font-size: 15px;">Perelman School of Medicine</p>
+                    <p class="mb-2" style="font-size: 15px;">Department of Biostatistics, Epidemiology and Informatics</p>                 
+                    <p class="mb-2" style="font-size: 15px;">602 Blockley Hall, 423 Guardian Drive</p>
+                    <p class="mb-2" style="font-size: 15px;">Philadelphia, PA 19104-6021 USA</p>
+                    <p class="mb-2" style="font-size: 15px;">Email: <a href="mailto:ychen123@upenn.edu" class="text-light">ychen123@upenn.edu</a></p>
+                    <p class="mb-2" style="font-size: 15px;">Phone: <a href="tel:+12157468155" class="text-light">(215)-746-8155</a></p>
+                    <p class="mb-0" style="font-size: 15px;">Website: <a href="https://penncil.med.upenn.edu/" target="_blank" class="text-light">penncil.med.upenn.edu</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pica/8.0.0/pica.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('University Access Portal Loaded Successfully.');
+            
+            let usersCount = 0;
+            let conversationsCount = 0;
+
+            /**
+             * Fetch and update stats on the page
+             */
+            async function fetchStats() {
+                try {
+                    const response = await fetch("/get-stats/");
+                    if (!response.ok) throw new Error("Failed to fetch stats");
+
+                    const data = await response.json();
+                    // console.log("Fetched stats:", data);
+
+                    updateCounter("usersCount", usersCount, data.userCount);
+                    updateCounter("conversationsCount", conversationsCount, data.conversationCount);
+
+                    usersCount = data.userCount;
+                    conversationsCount = data.conversationCount;
+                } catch (error) {
+                    console.error("Error fetching stats:", error);
+                }
+            }
+
+            /**
+             * Updates the counter with animation only if the value changes
+             */
+            function updateCounter(id, previous, current) {
+                if (previous !== current) {
+                    animateCounter(id, previous, current, 1500);
+                }
+            }
+
+            /**
+             * Track user visits (increment once per browser session)
+             */
+            async function trackUser() {
+                if (!sessionStorage.getItem("userTracked")) {
+                    try {
+                        // console.log("Tracking rough user count...");
+                        const response = await fetch("/track-user/", { method: "POST" });
+                        if (!response.ok) throw new Error("Failed to track user");
+
+                        const data = await response.json();
+                        // console.log("User tracked:", data.userCount);
+
+                        sessionStorage.setItem("userTracked", "true"); // Prevent counting again in the same session
+                    } catch (error) {
+                        console.error("Error tracking user:", error);
+                    }
+                }
+                await fetchStats(); // Fetch the latest stats
+            }
+
+            /**
+             * Track conversation clicks (increment every time a link is clicked)
+             */
+            async function trackConversation() {
+                try {
+                    // console.log("Tracking conversation click...");
+                    const response = await fetch("/track-conversation/", { method: "POST" });
+                    if (!response.ok) throw new Error("Failed to track conversation");
+
+                    const data = await response.json();
+                    // console.log("Conversation count updated:", data.conversationCount);
+                } catch (error) {
+                    console.error("Error tracking conversation:", error);
+                }
+                fetchStats();
+            }
+
+            // Track user visit when the page loads (rough estimation)
+            trackUser();
+
+            /**
+             * Event delegation for handling clicks on dynamically loaded `.university-click` links
+             */
+            document.body.addEventListener("click", async (event) => {
+                const link = event.target.closest(".university-click");
+                if (!link) return;
+
+                event.preventDefault(); // Prevent immediate navigation
+
+                try {
+                    await trackConversation();
+
+                    // console.log("Navigating to:", link.href);
+                    window.location.href = link.href;
+                } catch (error) {
+                    console.error("Error tracking conversation:", error);
+                    window.location.href = link.href; // Ensure navigation happens
+                }
+            });
+
+            /**
+             * Function to smoothly animate number updates
+             */
+            function animateCounter(id, start, end, duration) {
+                const obj = document.getElementById(id);
+                if (!obj) return;
+
+                let startTimestamp = null;
+
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerText = Math.floor(progress * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            // Periodically update stats every 60 seconds
+            setInterval(fetchStats, 60000);
+                });
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            const images = document.querySelectorAll(".utsection .col-md-3 img");
+            const picaResizer = pica();
+            
+            // define bounding box
+            const maxWidth  = 200;
+            const maxHeight = 120;
+          
+            images.forEach((img) => {
+              // create an offscreen canvas
+              let canvas  = document.createElement("canvas");
+              let context = canvas.getContext("2d");
+          
+              // create a temp image to measure original width & height
+              let tempImg = new Image();
+              tempImg.crossOrigin = "anonymous";
+          
+              tempImg.onload = function () {
+                // Keep aspect ratio by computing a scale ratio
+                let ratio = Math.min(maxWidth / tempImg.width, maxHeight / tempImg.height);
+                let newWidth  = Math.round(tempImg.width  * ratio);
+                let newHeight = Math.round(tempImg.height * ratio);
+          
+                // set canvas dimensions
+                canvas.width  = newWidth;
+                canvas.height = newHeight;
+          
+                // ensure it’s transparent to start
+                context.clearRect(0, 0, newWidth, newHeight);
+
+                // Use Pica to do a high quality resize, preserving alpha
+                picaResizer
+                  .resize(tempImg, canvas, {
+                    alpha: true,
+                    unsharpAmount: 120,
+                    unsharpRadius: 0.6,
+                    unsharpThreshold: 2
+                  })
+                  .then(() => {
+                    // convert the canvas back to a dataURL
+                    img.src = canvas.toDataURL();
+                  });
+              };
+          
+              // load the original src
+              tempImg.src = img.src;
+            });
+        });
+    
+        document.addEventListener("DOMContentLoaded", function () {
+    // Select demo-container, slider-container, and buttons
+    const demoContainer = document.querySelector(".demo-container");
+    const sliderContainer = document.querySelector(".slider-container");
+    const button1 = document.getElementById("button-1");
+    const button2 = document.getElementById("button-2");
+
+    // Function to toggle visibility of containers
+    function showContainer(containerToShow) {
+        if (containerToShow === "demo") {
+            demoContainer.style.display = "block";
+            sliderContainer.style.display = "none";
+        } else if (containerToShow === "slider") {
+            demoContainer.style.display = "none";
+            sliderContainer.style.display = "block";
+        }
+    }
+
+    // Set initial state to show `demo-container` and select button-1
+    showContainer("demo");
+    button1.classList.add("active");
+
+    // Event listeners for buttons
+    button1.addEventListener("click", () => {
+        showContainer("demo");
+        button1.classList.add("active");
+        button2.classList.remove("active");
+    });
+
+    button2.addEventListener("click", () => {
+        showContainer("slider");
+        button2.classList.add("active");
+        button1.classList.remove("active");
+    });
+
+    // ====================== SLIDER LOGIC ======================
+
+    // Collect all slides and buttons
+    const slides = document.querySelectorAll(".slide");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // Track the current slide
+    let currentSlide = 0;
+
+    // Function to update which slide is shown and disable/hide buttons accordingly
+    function showSlide(index) {
+        // Hide all slides
+        slides.forEach((slide) => slide.classList.remove("active"));
+
+        // Show the selected slide
+        slides[index].classList.add("active");
+
+        // Make "Previous" button invisible on the first slide
+        prevBtn.style.visibility = index === 0 ? "hidden" : "visible";
+
+        // Make "Next" button invisible on the last slide
+        nextBtn.style.visibility = index === slides.length - 1 ? "hidden" : "visible";
+    }
+
+    // Click handlers (no looping anymore)
+    prevBtn.addEventListener("click", () => {
+        if (currentSlide > 0) {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+    });
+
+    nextBtn.addEventListener("click", () => {
+        if (currentSlide < slides.length - 1) {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+    });
+
+    // Show the first slide initially and hide "Previous" button
+    showSlide(currentSlide);
+});
+
+    
+    </script>
+</body>
+</html>

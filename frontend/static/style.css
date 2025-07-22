@@ -1,0 +1,80 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #343a40;
+}
+
+.university-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.university-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 220px;
+}
+
+.university-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 16px rgba(0, 0, 0, 0.2);
+}
+
+.university-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.university-card a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    text-align: center;
+    width: 100%;
+    color: #6c757d;
+}
+
+.utsection .col-md-3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    background: white;
+    /* Ensures logos blend in properly */
+    padding: 5px;
+    border-radius: 8px;
+    /* Slightly rounded corners to unify appearance */
+}
+
+.utsection .col-md-3 img {
+    width: auto;
+    /* preserve aspect ratio in final display */
+    height: auto;
+    /* do not force height */
+    max-width: 250px;
+    /* or 100% of container, whichever you prefer */
+    max-height: 120px;
+    object-fit: contain;
+    padding: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.utsection .col-md-3 a:hover img {
+    transform: scale(1.05);
+}

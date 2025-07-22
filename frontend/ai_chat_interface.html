@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerGPT AI Chat Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-time {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .result-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .assumptions-list, .recommendations-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .assumptions-list li, .recommendations-list li {
+            padding: 5px 0;
+            border-left: 3px solid #667eea;
+            padding-left: 15px;
+            margin-bottom: 5px;
+        }
+
+        .example-queries {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .example-queries h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .example-query {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        .example-query:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #f5c6cb;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🤖 PowerGPT AI Assistant</h1>
+            <p>Ask me anything about statistical power analysis in natural language</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    <p>Hello! I'm PowerGPT, your AI-powered statistical consultant. I can help you with:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Sample size calculations for various statistical tests</li>
+                        <li>Power analysis for clinical trials and research studies</li>
+                        <li>Statistical test selection and parameter interpretation</li>
+                        <li>Educational explanations of statistical concepts</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Try asking me something like: "I need sample size for comparing two groups with 0.5 difference, SD of 1.0, and 80% power"</p>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+
+            <div class="example-queries">
+                <h3>💡 Example Queries</h3>
+                <div class="example-query" onclick="useExampleQuery(this)">
+                    "I need sample size for comparing two groups with 0.5 difference, SD of 1.0, and 80% power"
+                </div>
+                <div class="example-query" onclick="useExampleQuery(this)">
+                    "What sample size do I need for a chi-squared test with effect size 0.3, 1 degree of freedom, and 90% power?"
+                </div>
+                <div class="example-query" onclick="useExampleQuery(this)">
+                    "Help me design a survival analysis study with 80% power, equal allocation, 30% events in treatment, 50% in control, hazard ratio 0.6"
+                </div>
+                <div class="example-query" onclick="useExampleQuery(this)">
+                    "Calculate sample size for ANOVA with 3 groups, effect size 0.25, and 80% power"
+                </div>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            <p style="margin-top: 10px; color: #666;">PowerGPT is analyzing your query...</p>
+        </div>
+
+        <div class="chat-input">
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="Ask me about statistical power analysis..." onkeypress="handleKeyPress(event)">
+                <button class="send-button" onclick="sendMessage()" id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let isProcessing = false;
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !isProcessing) {
+                sendMessage();
+            }
+        }
+
+        function useExampleQuery(element) {
+            const query = element.textContent.trim();
+            document.getElementById('messageInput').value = query;
+            document.getElementById('messageInput').focus();
+        }
+
+        async function sendMessage() {
+            if (isProcessing) return;
+
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            showTypingIndicator();
+            isProcessing = true;
+            document.getElementById('sendButton').disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/ai/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: message,
+                        include_educational_content: true,
+                        response_format: 'detailed'
+                    })
+                });
+
+                const result = await response.json();
+                hideTypingIndicator();
+
+                if (result.success) {
+                    displayAIResponse(result);
+                } else {
+                    addErrorMessage(result.error_message || 'Failed to process your query');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addErrorMessage('Network error. Please check if the PowerGPT backend is running.');
+                console.error('Error:', error);
+            } finally {
+                isProcessing = false;
+                document.getElementById('sendButton').disabled = false;
+            }
+        }
+
+        function addMessage(content, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const time = new Date().toLocaleTimeString();
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${content}</p>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function displayAIResponse(result) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            const time = new Date().toLocaleTimeString();
+            
+            let responseContent = `
+                <div class="message-content">
+                    <p><strong>Statistical Analysis Result:</strong></p>
+            `;
+
+            if (result.statistical_result && result.statistical_result.result) {
+                responseContent += `
+                    <div class="result-card">
+                        <div class="result-title">Sample Size Required:</div>
+                        <div class="result-value">${result.statistical_result.result}</div>
+                    </div>
+                `;
+            }
+
+            if (result.ai_response) {
+                responseContent += `
+                    <div class="result-details">
+                        <p><strong>Interpretation:</strong></p>
+                        <p>${result.ai_response.interpretation}</p>
+                        
+                        ${result.ai_response.assumptions && result.ai_response.assumptions.length > 0 ? `
+                            <p style="margin-top: 15px;"><strong>Statistical Assumptions:</strong></p>
+                            <ul class="assumptions-list">
+                                ${result.ai_response.assumptions.map(assumption => `<li>${assumption}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                        
+                        ${result.ai_response.recommendations && result.ai_response.recommendations.length > 0 ? `
+                            <p style="margin-top: 15px;"><strong>Study Design Recommendations:</strong></p>
+                            <ul class="recommendations-list">
+                                ${result.ai_response.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                        
+                        <p style="margin-top: 15px;"><strong>Educational Context:</strong></p>
+                        <p>${result.ai_response.educational_context}</p>
+                    </div>
+                `;
+            }
+
+            responseContent += `
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            messageDiv.innerHTML = responseContent;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addErrorMessage(errorMessage) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            const time = new Date().toLocaleTimeString();
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="error-message">
+                        <strong>Error:</strong> ${errorMessage}
+                    </div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        // Focus on input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('messageInput').focus();
+        });
+    </script>
+</body>
+</html> 

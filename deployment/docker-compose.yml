@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PowerGPT Backend Service
+  powergpt-backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: powergpt-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - R_LIBS_USER=/usr/local/lib/R/site-library
+      - LOG_LEVEL=INFO
+    volumes:
+      - backend-data:/app/data
+      - r-packages:/usr/local/lib/R/site-library
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - powergpt-network
+
+  # PowerGPT Frontend Service
+  powergpt-frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: powergpt-frontend
+    ports:
+      - "8000:8000"
+    environment:
+      - FEEDBACK_API_KEY=${FEEDBACK_API_KEY:-your_dify_api_key_here}
+      - STATS_FILE=stats.json
+      - BACKEND_URL=http://powergpt-backend:5000
+      - LOG_LEVEL=INFO
+    volumes:
+      - frontend-data:/app/data
+    depends_on:
+      powergpt-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - powergpt-network
+
+  # Redis Cache (Optional - for production)
+  redis:
+    image: redis:7-alpine
+    container_name: powergpt-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - powergpt-network
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: powergpt-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - powergpt-frontend
+      - powergpt-backend
+    restart: unless-stopped
+    networks:
+      - powergpt-network
+
+volumes:
+  backend-data:
+    driver: local
+  frontend-data:
+    driver: local
+  r-packages:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  powergpt-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16 

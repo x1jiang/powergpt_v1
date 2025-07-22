@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ university_name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Custom CSS -->
+    <link href="/static/style.css" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .header img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .iframe-container {
+            width: 100%;
+            height: calc(100% - 70px); /* Adjust height based on header */
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+          /* Feedback Button */
+          .feedback-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 0.8px;
+            box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .feedback-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.01);
+        }
+
+        /* Modal (Pop-up) Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .modal h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Close Button */
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+
+        /* Overlay Background */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+
+        /* Form Elements */
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+         /* Submit Button */
+         .submit-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Loading Indicator */
+        .loading {
+            display: none;
+            margin-top: 10px;
+            color: #007bff;
+            font-size: 14px;
+        }
+
+        /* Success & Error Messages */
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ university_logo }}" alt="{{ university_name }} Logo">
+        <h1>{{ university_name }}</h1>
+    </div>
+    <div class="iframe-container">
+        <iframe src="https://dify-service-765428358644.us-central1.run.app/chat/xlZ4eIwYT9mDIOgc"></iframe>
+    </div>
+
+    <button id="feedbackButton" class="feedback-btn">Help Us Improve</button>
+
+    <div class="overlay" id="overlay" onclick="closeFeedback()"></div>
+    <div class="modal" id="feedbackModal">
+        <button class="close-button" onclick="closeFeedback()">✖</button>
+        <h2>We Value Your Feedback</h2>
+        <form id="feedbackForm">
+            <label>Was it easy to navigate the website?</label>
+            <select id="navigationFeedback" required>
+                <option value="">-- Select an option --</option>
+                <option value="Yes">👍 Yes</option>
+                <option value="No">👎 No</option>
+            </select>
+
+            <label>Did the chatbot provide useful solutions?</label>
+            <select id="chatbotFeedback" required>
+                <option value="">-- Select an option --</option>
+                <option value="Yes">👍 Yes</option>
+                <option value="No">👎 No</option>
+            </select>
+
+            <label>How would you rate your experience?</label>
+            <select id="rating" required>
+                <option value="">-- Select a rating --</option>
+                <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                <option value="4">⭐⭐⭐⭐ (Good)</option>
+                <option value="3">⭐⭐⭐ (Average)</option>
+                <option value="2">⭐⭐ (Poor)</option>
+                <option value="1">⭐ (Very Bad)</option>
+            </select>
+
+            <label>Any suggestions? (Optional)</label>
+            <textarea id="suggestions" name="suggestions" rows="3"></textarea>
+
+            <button type="submit" class="submit-button">Submit Feedback</button>
+            <div class="loading" id="loadingText">Sending feedback...</div>
+            <div class="message" id="messageText"></div>
+        </form>
+    </div>
+    <img src="/static/assets/logo/powergpt_logo_white_background.png" alt="powerGPT logo" style="height:2rem; position: fixed; left:1rem; bottom: 1rem">
+
+    <script>
+        function openFeedback() {
+            document.getElementById("feedbackModal").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+    
+        function closeFeedback() {
+            document.getElementById("feedbackModal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+    
+        // Attach click event to the feedback button to open the modal
+        document.getElementById("feedbackButton").addEventListener("click", openFeedback);
+    
+        async function submitFeedback(event) {
+            event.preventDefault(); // Prevent page refresh
+
+            // Disable form elements during submission
+            document.querySelectorAll("select, textarea").forEach(el => el.disabled = true);
+            const submitButton = document.querySelector(".submit-button");
+            submitButton.disabled = true;
+            submitButton.style.opacity = "0.6"; // Visually indicate it's disabled
+            document.getElementById("loadingText").style.display = "block"; // Show loading text
+            document.getElementById("messageText").innerHTML = ""; // Clear previous messages
+
+            let formData = new FormData();
+            formData.append("navigation", document.getElementById("navigationFeedback").value);
+            formData.append("chatbot", document.getElementById("chatbotFeedback").value);
+            formData.append("rating", document.getElementById("rating").value);
+            formData.append("suggestions", document.getElementById("suggestions").value);
+
+            try {
+                let response = await fetch("/submit-feedback/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    document.getElementById("messageText").innerHTML = '<span class="success">Feedback submitted successfully!</span>';
+                } else {
+                    document.getElementById("messageText").innerHTML = '<span class="error">Failed to submit feedback.</span>';
+                }
+            } catch (error) {
+                document.getElementById("messageText").innerHTML = '<span class="error">Error submitting feedback.</span>';
+            } finally {
+                // Hide loading text
+                document.getElementById("loadingText").style.display = "none";
+
+                // Re-enable form elements after submission
+                document.querySelectorAll("select, textarea").forEach(el => el.disabled = false);
+                submitButton.disabled = false;
+                submitButton.style.opacity = "1"; // Restore normal button opacity
+
+                // Optionally, close modal after success
+                setTimeout(closeFeedback, 2000);
+            }
+        }
+
+        // Attach event listener to the form
+        document.getElementById("feedbackForm").addEventListener("submit", submitFeedback);
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerGPT AI Chat Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ai .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.ai .message-content h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .message.ai .message-content h4 {
+            color: #764ba2;
+            margin: 15px 0 5px 0;
+            font-size: 14px;
+        }
+
+        .message.ai .message-content ul {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .message.ai .message-content li {
+            margin-bottom: 5px;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            max-width: 70%;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .example-queries {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .example-queries h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .example-query {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .example-query:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #c62828;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🤖 PowerGPT AI Assistant</h1>
+            <p>Your AI-powered statistical consultant for power analysis</p>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai">
+                <div class="message-content">
+                    <h3>Welcome to PowerGPT AI! 👋</h3>
+                    <p>I'm here to help you with statistical power analysis. You can ask me questions like:</p>
+                    <ul>
+                        <li>"I need sample size for comparing two groups with 0.5 difference, SD of 1.0, and 80% power"</li>
+                        <li>"What sample size do I need for a chi-squared test with effect size 0.3, 1 degree of freedom, and 90% power?"</li>
+                        <li>"Help me design a survival analysis study with 80% power, equal allocation, 30% events in treatment, 50% in control, hazard ratio 0.6"</li>
+                    </ul>
+                    <p>Just type your question below and I'll help you calculate the appropriate sample size and provide educational insights!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <div class="input-container">
+                <input type="text" id="userInput" placeholder="Ask me about statistical power analysis..." onkeypress="handleKeyPress(event)">
+                <button class="send-button" onclick="sendMessage()" id="sendButton">Send</button>
+            </div>
+            
+            <div class="example-queries">
+                <h4>💡 Try these example queries:</h4>
+                <div class="example-query" onclick="useExampleQuery('I need sample size for comparing two groups with 0.5 difference, SD of 1.0, and 80% power')">Two-sample t-test</div>
+                <div class="example-query" onclick="useExampleQuery('chi squared test with effect size 0.3, 1 degree of freedom, and 90% power')">Chi-squared test</div>
+                <div class="example-query" onclick="useExampleQuery('one way ANOVA with 3 groups, effect size 0.25, and 80% power')">One-way ANOVA</div>
+                <div class="example-query" onclick="useExampleQuery('correlation test with r=0.5 and 80% power')">Correlation test</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const POWERGPT_BASE_URL = 'http://localhost:5001';
+        
+        function addMessage(content, isUser = false) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (isUser) {
+                contentDiv.textContent = content;
+            } else {
+                // Parse AI response and format it nicely
+                if (typeof content === 'object' && content.ai_response) {
+                    const ai = content.ai_response;
+                    contentDiv.innerHTML = `
+                        <h3>📊 Sample Size Result</h3>
+                        <p><strong>Calculated Sample Size:</strong> ${ai.sample_size}</p>
+                        
+                        <h4>📝 Interpretation</h4>
+                        <p>${ai.interpretation}</p>
+                        
+                        <h4>📋 Statistical Assumptions</h4>
+                        <ul>
+                            ${ai.assumptions.map(assumption => `<li>${assumption}</li>`).join('')}
+                        </ul>
+                        
+                        <h4>💡 Recommendations</h4>
+                        <ul>
+                            ${ai.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                        
+                        <h4>🎓 Educational Context</h4>
+                        <p>${ai.educational_context}</p>
+                    `;
+                } else if (typeof content === 'string') {
+                    contentDiv.textContent = content;
+                } else {
+                    contentDiv.textContent = JSON.stringify(content, null, 2);
+                }
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function useExampleQuery(query) {
+            document.getElementById('userInput').value = query;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, true);
+            input.value = '';
+            
+            // Disable input and show typing indicator
+            input.disabled = true;
+            sendButton.disabled = true;
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch(`${POWERGPT_BASE_URL}/ai/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: message,
+                        include_educational_content: true,
+                        response_format: 'detailed'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessage(data);
+                } else {
+                    addMessage(`❌ Error: ${data.error_message || 'Failed to process query'}`);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('❌ Error: Unable to connect to PowerGPT AI service. Please check if the backend server is running.');
+            } finally {
+                // Re-enable input and hide typing indicator
+                input.disabled = false;
+                sendButton.disabled = false;
+                hideTypingIndicator();
+                input.focus();
+            }
+        }
+
+        // Focus on input when page loads
+        window.onload = function() {
+            document.getElementById('userInput').focus();
+        };
+    </script>
+</body>
+</html> 
