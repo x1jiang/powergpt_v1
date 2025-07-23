@@ -69,8 +69,8 @@ powergpt_v1/
 #### Installation
 ```bash
 # Clone repository
-git clone https://github.com/your-username/powergpt.git
-cd powergpt
+git clone https://github.com/x1jiang/powergpt_v1.git
+cd powergpt_v1
 
 # Install dependencies
 pip install -r backend/requirements.txt
